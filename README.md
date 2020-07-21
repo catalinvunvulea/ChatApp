@@ -1,6 +1,8 @@
 # ChatApp
 
-A new Flutter project.
+This app was built during classes from www.udemy.com
+
+Section 14: Firebase, Image Upload, Push Notifications - Building a Chat App
 
 ## Getting Started
 
