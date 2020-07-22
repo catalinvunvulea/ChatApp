@@ -7,27 +7,28 @@ class ChatScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: ListView.builder(
-          itemCount: 20,
-          itemBuilder: (ctx, index) => Container(
-            padding: EdgeInsets.all(8),
-            child: Text('This works'),
-          ),
-        ),
-        floatingActionButton: FloatingActionButton(
-          child: Icon(Icons.add),
-          onPressed: () {
-            Firestore.instance
-                .collection('chats/HR6jgiJzeeditrjJc8uf/messages')//get acces to that path from firestore; this snapshot returns a stream which can be listened to whenever there is a change
-                .snapshots()
-                .listen(
-                    (data) {
-                      data.documents.forEach((document) { 
-                        print(document['text']);
-                      });
-                      
-                    }); 
-          },
-        ));
+      body: StreamBuilder(//provided by flutter not by firebase
+          stream: Firestore.instance
+              .collection(
+                  'chats/HR6jgiJzeeditrjJc8uf/messages') //get acces to that path from firestore; this snapshot returns a stream which can be listened to whenever there is a change
+              .snapshots(),
+          builder: (ctx, streamSnapshot) {
+            if (streamSnapshot.connectionState == ConnectionState.waiting) {
+              return Center(child: CircularProgressIndicator(),);
+            }
+            final documents = streamSnapshot.data.documents;
+            return ListView.builder(
+              itemCount: documents.length,
+              itemBuilder: (ctx, index) => Container(
+                padding: EdgeInsets.all(8),
+                child: Card(child: Text(documents[index]['text'])),
+              ),
+            );
+          }),
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.add),
+        onPressed: () {},
+      ),
+    );
   }
 }
