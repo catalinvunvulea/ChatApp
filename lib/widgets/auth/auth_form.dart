@@ -1,7 +1,14 @@
 import 'package:flutter/material.dart';
 
 class AuthForm extends StatefulWidget {
-  const AuthForm({Key key}) : super(key: key);
+  final void Function(
+    String email,
+    String password,
+    String userName,
+    bool isLginMode,
+  ) submitAuthForm;
+
+  AuthForm(this.submitAuthForm);
 
   @override
   _AuthFormState createState() => _AuthFormState();
@@ -12,9 +19,9 @@ class _AuthFormState extends State<AuthForm> {
       FormState>(); //we create this key and will connect it to the form, to then trigger the validators + etc when we press the login btn
 
   var _isLoginMode = true;
-  var userEmail = '';
-  var userName = '';
-  var userPassword = '';
+  var _userEmail = '';
+  var _userName = '';
+  var _userPassword = '';
 
   void _tryValidate() {
     final isValid = _formKey.currentState
@@ -27,9 +34,7 @@ class _AuthFormState extends State<AuthForm> {
       _formKey.currentState
           .save(); //it will go through all the textFileds fomr the form and it will trigger onSaved
       //after the input values are saved, we can use the values to send our auth to firebase
-      print(userEmail);
-      print(userName);
-      print(userPassword);
+      widget.submitAuthForm(_userEmail, _userPassword, _userName, _isLoginMode);
     }
   }
 
@@ -71,7 +76,7 @@ class _AuthFormState extends State<AuthForm> {
                   },
                   onSaved: (value) {
                     //value = user Input text
-                    userEmail =
+                    _userEmail =
                         value; //we don't use set state here because when we change the value of this var, the screen will stay the same
                   },
                 ),
@@ -88,7 +93,7 @@ class _AuthFormState extends State<AuthForm> {
                       return null;
                     },
                     onSaved: (value) {
-                      userName = value;
+                      _userName = value;
                     },
                     decoration: const InputDecoration(
                       labelText: 'User Name',
@@ -111,7 +116,7 @@ class _AuthFormState extends State<AuthForm> {
                     return null;
                   },
                   onSaved: (value) {
-                    userPassword = value;
+                    _userPassword = value;
                   },
                   decoration: const InputDecoration(
                     hintText: 'Add at least 7 characters',
@@ -137,7 +142,7 @@ class _AuthFormState extends State<AuthForm> {
                       ),
                     ),
                     validator: (value) {
-                      if (value.isEmpty || value != userPassword) {
+                      if (value.isEmpty || value != _userPassword) {
                         return "Passwords don't match";
                       }
                       return null;
