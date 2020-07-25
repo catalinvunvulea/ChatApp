@@ -12,6 +12,10 @@ class _AuthFormState extends State<AuthForm> {
   Widget build(BuildContext context) {
     return Center(
       child: Card(
+        elevation: 15,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15),
+        ),
         margin: EdgeInsets.all(20),
         color: Colors.yellow[50],
         child: SingleChildScrollView(
@@ -40,7 +44,7 @@ class _AuthFormState extends State<AuthForm> {
                 FlatButton(
                   child: Text(
                     'Create new account',
-                    style: TextStyle(color: Colors.red),
+                    style: TextStyle(color: Theme.of(context).accentColor),
                   ),
                   onPressed: () {},
                 )
