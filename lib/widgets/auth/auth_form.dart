@@ -6,6 +6,7 @@ class AuthForm extends StatefulWidget {
     String password,
     String userName,
     bool isLginMode,
+    BuildContext ctx, //to be used for showing the error message
   ) submitAuthForm;
 
   AuthForm(this.submitAuthForm);
@@ -18,6 +19,8 @@ class _AuthFormState extends State<AuthForm> {
   final _formKey = GlobalKey<
       FormState>(); //we create this key and will connect it to the form, to then trigger the validators + etc when we press the login btn
 
+  final _passwordController =
+      TextEditingController(); //used to check the password in the re-type filed; _userPassword get saved only when _tryValidate is called
   var _isLoginMode = true;
   var _userEmail = '';
   var _userName = '';
@@ -25,7 +28,7 @@ class _AuthFormState extends State<AuthForm> {
 
   void _tryValidate() {
     final isValid = _formKey.currentState
-        .validate(); //when called, will try to validate all the validators from the form (where this _formKey was addet)
+        .validate(); //when called, will try to validate all the validators from the form (where this _formKey was added)
     FocusScope.of(context)
         .unfocus(); //to remove the focus from any selected field and close the keyboard
 
@@ -34,7 +37,13 @@ class _AuthFormState extends State<AuthForm> {
       _formKey.currentState
           .save(); //it will go through all the textFileds fomr the form and it will trigger onSaved
       //after the input values are saved, we can use the values to send our auth to firebase
-      widget.submitAuthForm(_userEmail, _userPassword, _userName, _isLoginMode);
+      widget.submitAuthForm(
+        _userEmail.trim(),//trim is added ot remove any space before or after
+        _userPassword.trim(),
+        _userName.trim(),
+        _isLoginMode,
+        context,//pass the context from this widget to the auth screen
+      );
     }
   }
 
@@ -127,6 +136,7 @@ class _AuthFormState extends State<AuthForm> {
                       ),
                     ),
                   ),
+                  controller: _passwordController,
                   obscureText: true, //hide the inputText -as password
                 ),
                 if (!_isLoginMode) SizedBox(height: 12),
@@ -142,7 +152,7 @@ class _AuthFormState extends State<AuthForm> {
                       ),
                     ),
                     validator: (value) {
-                      if (value.isEmpty || value != _userPassword) {
+                      if (value.isEmpty || value != _passwordController.text) {
                         return "Passwords don't match";
                       }
                       return null;
