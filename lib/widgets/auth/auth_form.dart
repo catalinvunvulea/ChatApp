@@ -16,29 +16,56 @@ class _AuthFormState extends State<AuthForm> {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(15),
         ),
-        margin: EdgeInsets.all(20),
-        color: Colors.yellow[50],
+        margin: const EdgeInsets.all(20),
+        color: Colors.white,
         child: SingleChildScrollView(
             child: Padding(
-          padding: EdgeInsets.all(16),
+          padding: const EdgeInsets.all(16),
           child: Form(
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
                 TextFormField(
                   keyboardType: TextInputType.emailAddress,
-                  decoration: InputDecoration(labelText: 'Email address'),
+                  decoration: const InputDecoration(
+                    labelText: 'Email address',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(15),
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  height: 12,
                 ),
                 TextFormField(
-                  decoration: InputDecoration(labelText: 'Username'),
+                  decoration: const InputDecoration(
+                    labelText: 'Username',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(15),
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  height: 12,
                 ),
                 TextFormField(
-                  decoration: InputDecoration(labelText: 'Password'),
-                  obscureText: true,
+                  decoration: const InputDecoration(
+                    labelText: 'Password',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(15),
+                      ),
+                    ),
+                  ),
+                  obscureText: true, //hide the inputText -as password
                 ),
                 SizedBox(height: 12),
                 RaisedButton(
-                  child: Text('Login'),
+                  child: const Text('Login'),
                   onPressed: () {},
                 ),
                 FlatButton(
