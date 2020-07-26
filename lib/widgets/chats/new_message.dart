@@ -13,11 +13,14 @@ class _NewMessageState extends State<NewMessage> {
   void _sendMessage() {
     FocusScope.of(context).unfocus(); //to close the keyboard
     Firestore.instance.collection('chat').add(
-      {'text': _enteredMessage,
-      'createdAt': Timestamp.now(),//made available by firestore cloud package; create it to sort the messages 
+      {
+        'text': _enteredMessage,
+        'createdAt': Timestamp
+            .now(), //made available by firestore cloud package; create it to sort the messages
       },
     );
-    _controller.clear();//to clear the text from textField when this func is executed
+    _controller
+        .clear(); //to clear the text from textField when this func is executed
   }
 
   @override
