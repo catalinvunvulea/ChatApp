@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart'; //enable use of firebase_auth functions
 import 'package:flutter/services.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../widgets/auth/auth_form.dart';
 
@@ -13,15 +14,21 @@ class _AuthScreenState extends State<AuthScreen> {
   final _auth = FirebaseAuth
       .instance; //gives us an instance to the firebase AuthObject (funcitons) which is setup and managed by the firebasAuth package
 
+  var _isLoading = false;
+
   void _submitAuthForm(
     String email,
     String password,
-    String uersName,
+    String uerName,
     bool isLoginMode,
     BuildContext ctx,
   ) async {
     AuthResult authResult;
     try {
+      setState(() {
+        _isLoading =
+            true; //to show a spinner while data is sent and received from firebase
+      });
       if (isLoginMode) {
         //if user has selected that he has an account
         authResult = await _auth.signInWithEmailAndPassword(
@@ -34,6 +41,17 @@ class _AuthScreenState extends State<AuthScreen> {
           email: email,
           password: password,
         );
+        //the following is done only when we have a new user
+        await Firestore.instance //accessing firestore
+            .collection(
+                'users') //accessing collection(folder) 'users' (or creating if it doesn't exist)
+            .document(authResult.user
+                .uid) //using the document from authResult (user.uid) to create the id (same as the one in auth)
+            .setData({
+          //add data in the folder accessed above
+          'username': uerName,
+          'email': email,
+        });
       }
     } on PlatformException catch (error) {
       //catch only errors thrown by the platform (firebase in our case)
@@ -42,12 +60,20 @@ class _AuthScreenState extends State<AuthScreen> {
         //if we get an message form the server
         message = error.message;
       }
-      Scaffold.of(ctx).showSnackBar(SnackBar(//show the message error in a SnackBar (comes from the bottom)
+      Scaffold.of(ctx).showSnackBar(SnackBar(
+        //show the message error in a SnackBar (comes from the bottom)
         content: Text(message),
         backgroundColor: Theme.of(ctx).errorColor,
       ));
-    } catch (error) {//to catch other type of errors
-    print(error);
+      setState(() {
+        _isLoading = false;
+      });
+    } catch (error) {
+      //to catch other type of errors
+      print(error);
+      setState(() {
+        _isLoading = false;
+      });
     }
   }
 
@@ -57,6 +83,7 @@ class _AuthScreenState extends State<AuthScreen> {
       backgroundColor: Theme.of(context).primaryColor,
       body: AuthForm(
         _submitAuthForm,
+        _isLoading,
       ),
     );
   }

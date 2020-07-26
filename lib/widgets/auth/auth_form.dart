@@ -8,8 +8,9 @@ class AuthForm extends StatefulWidget {
     bool isLginMode,
     BuildContext ctx, //to be used for showing the error message
   ) submitAuthForm;
+  final bool isLoading;
 
-  AuthForm(this.submitAuthForm);
+  AuthForm(this.submitAuthForm, this.isLoading);
 
   @override
   _AuthFormState createState() => _AuthFormState();
@@ -18,6 +19,7 @@ class AuthForm extends StatefulWidget {
 class _AuthFormState extends State<AuthForm> {
   final _formKey = GlobalKey<
       FormState>(); //we create this key and will connect it to the form, to then trigger the validators + etc when we press the login btn
+
 
   final _passwordController =
       TextEditingController(); //used to check the password in the re-type filed; _userPassword get saved only when _tryValidate is called
@@ -160,10 +162,14 @@ class _AuthFormState extends State<AuthForm> {
                     obscureText: true,
                   ),
                 SizedBox(height: 12),
+                if(widget.isLoading)
+                CircularProgressIndicator(),
+                if (!widget.isLoading)
                 RaisedButton(
                   child: Text(_isLoginMode ? 'Login' : 'Signup'),
                   onPressed: _tryValidate,
-                ),
+                ), 
+                if (!widget.isLoading)
                 FlatButton(
                   textColor: Colors.purple,
                   child: Text(_isLoginMode
