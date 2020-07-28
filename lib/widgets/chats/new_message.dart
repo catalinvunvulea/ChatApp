@@ -1,3 +1,5 @@
+//import 'dart:html';
+
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -14,16 +16,20 @@ class _NewMessageState extends State<NewMessage> {
   void _sendMessage() async {
     FocusScope.of(context).unfocus(); //to close the keyboard
     final user = await FirebaseAuth.instance.currentUser(); //gives acces to the user (including the user id)
+    final userData = await Firestore.instance.collection('users').document(user.uid).get();//get the user id from users, so we can get the user name later
     Firestore.instance.collection('chat').add(
       {
         'text': _enteredMessage,
         'createdAt': Timestamp
             .now(), //made available by firestore cloud package; create it to sort the messages
-        'userId': user.uid
-      },
+        'userId': user.uid,
+        'username': userData['username'],
+        
+      }
     );
     _controller
         .clear(); //to clear the text from textField when this func is executed
+   
   }
 
   @override

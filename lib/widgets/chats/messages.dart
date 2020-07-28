@@ -42,10 +42,11 @@ class Messages extends StatelessWidget {
                 itemCount: chatDocs.length,
                 itemBuilder: (ctx, index) => MessageBubble(
                   chatDocs[index]['text'],
+                  chatDocs[index]['username'],//we will get the user name based on his id
                   chatDocs[index]['userId'] ==
                       futureSnapshot.data
                           .uid, //check if the logged in user id is the same with the user who wrote the message (false or true)
-                key: ValueKey(chatDocs[index].documentId)
+                key: ValueKey(chatDocs[index]['documentId'])
                 ),
               );
             });
