@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 import 'package:ChatApp/picker/user_image_picker.dart';
@@ -28,12 +30,26 @@ class _AuthFormState extends State<AuthForm> {
   var _userEmail = '';
   var _userName = '';
   var _userPassword = '';
+  File _userImageFile;
+
+  void _pickedImage(File image) {
+    _userImageFile = image;
+  }
 
   void _tryValidate() {
     final isValid = _formKey.currentState
         .validate(); //when called, will try to validate all the validators from the form (where this _formKey was added)
     FocusScope.of(context)
         .unfocus(); //to remove the focus from any selected field and close the keyboard
+
+    if (_userImageFile == null && !_isLoginMode) {
+      Scaffold.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Please pick an image'),
+        ),
+      );
+      return;
+    }
 
     if (isValid) {
       //will be valid only if all the validators from the form (textFIleds) will return null
@@ -68,7 +84,7 @@ class _AuthFormState extends State<AuthForm> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
-                if (!_isLoginMode) UserImagePicker(),
+                if (!_isLoginMode) UserImagePicker(_pickedImage),
                 SizedBox(height: 20),
                 TextFormField(
                   key: ValueKey(
