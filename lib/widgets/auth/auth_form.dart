@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'package:ChatApp/picker/user_image_picker.dart';
+
 class AuthForm extends StatefulWidget {
   final void Function(
     String email,
@@ -20,7 +22,6 @@ class _AuthFormState extends State<AuthForm> {
   final _formKey = GlobalKey<
       FormState>(); //we create this key and will connect it to the form, to then trigger the validators + etc when we press the login btn
 
-
   final _passwordController =
       TextEditingController(); //used to check the password in the re-type filed; _userPassword get saved only when _tryValidate is called
   var _isLoginMode = true;
@@ -40,11 +41,11 @@ class _AuthFormState extends State<AuthForm> {
           .save(); //it will go through all the textFileds fomr the form and it will trigger onSaved
       //after the input values are saved, we can use the values to send our auth to firebase
       widget.submitAuthForm(
-        _userEmail.trim(),//trim is added ot remove any space before or after
+        _userEmail.trim(), //trim is added ot remove any space before or after
         _userPassword.trim(),
         _userName.trim(),
         _isLoginMode,
-        context,//pass the context from this widget to the auth screen
+        context, //pass the context from this widget to the auth screen
       );
     }
   }
@@ -67,6 +68,8 @@ class _AuthFormState extends State<AuthForm> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
+                if (!_isLoginMode) UserImagePicker(),
+                SizedBox(height: 20),
                 TextFormField(
                   key: ValueKey(
                       'email'), //this key is given for when the screen is rebuilt, as we have the same widget (textField) multiple times, and flutter might wrongly alocate the data when rebuilt (explained at the beginning of the classes)
@@ -162,25 +165,24 @@ class _AuthFormState extends State<AuthForm> {
                     obscureText: true,
                   ),
                 SizedBox(height: 12),
-                if(widget.isLoading)
-                CircularProgressIndicator(),
+                if (widget.isLoading) CircularProgressIndicator(),
                 if (!widget.isLoading)
-                RaisedButton(
-                  child: Text(_isLoginMode ? 'Login' : 'Signup'),
-                  onPressed: _tryValidate,
-                ), 
+                  RaisedButton(
+                    child: Text(_isLoginMode ? 'Login' : 'Signup'),
+                    onPressed: _tryValidate,
+                  ),
                 if (!widget.isLoading)
-                FlatButton(
-                  textColor: Colors.purple,
-                  child: Text(_isLoginMode
-                      ? 'Create new account'
-                      : 'Already have an account'),
-                  onPressed: () {
-                    setState(() {
-                      _isLoginMode = !_isLoginMode;
-                    });
-                  },
-                ),
+                  FlatButton(
+                    textColor: Colors.purple,
+                    child: Text(_isLoginMode
+                        ? 'Create new account'
+                        : 'Already have an account'),
+                    onPressed: () {
+                      setState(() {
+                        _isLoginMode = !_isLoginMode;
+                      });
+                    },
+                  ),
               ],
             ),
           ),
