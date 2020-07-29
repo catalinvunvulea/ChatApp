@@ -9,6 +9,7 @@ class AuthForm extends StatefulWidget {
     String email,
     String password,
     String userName,
+    File image,
     bool isLginMode,
     BuildContext ctx, //to be used for showing the error message
   ) submitAuthForm;
@@ -60,6 +61,7 @@ class _AuthFormState extends State<AuthForm> {
         _userEmail.trim(), //trim is added ot remove any space before or after
         _userPassword.trim(),
         _userName.trim(),
+        _userImageFile,
         _isLoginMode,
         context, //pass the context from this widget to the auth screen
       );

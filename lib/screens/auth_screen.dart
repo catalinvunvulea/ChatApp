@@ -1,7 +1,10 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart'; //enable use of firebase_auth functions
 import 'package:flutter/services.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart'; //store the image file
 
 import '../widgets/auth/auth_form.dart';
 
@@ -20,6 +23,7 @@ class _AuthScreenState extends State<AuthScreen> {
     String email,
     String password,
     String uerName,
+    File image,
     bool isLoginMode,
     BuildContext ctx,
   ) async {
@@ -42,6 +46,16 @@ class _AuthScreenState extends State<AuthScreen> {
           password: password,
         );
         //the following is done only when we have a new user
+ 
+        final refX = FirebaseStorage.instance
+            .ref() //ref takes us to the root bucket of the firebaseStorage (unlike firebase DataBase and Auth, instead of collections we have buckets, instead of documents we have paths )
+            .child(
+                'user_images') //child = where we want to store file of from where we read a file
+            .child(authResult.user.uid +
+                '.jpg'); //we create a sub-path(file) and name it as our user id (unique) and add the type (.jpg)  at the end
+        await refX.putFile(
+            image).onComplete; //put/add a file (image) at the above path on firebaseStorage, and use the last segment of the path (child with jpg)as the file name, takes longer, does not return a future hence we need to add onComplete to enable it as a future (and use await)
+
         await Firestore.instance //accessing firestore
             .collection(
                 'users') //accessing collection(folder) 'users' (or creating if it doesn't exist)
