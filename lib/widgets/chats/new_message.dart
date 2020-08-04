@@ -24,6 +24,7 @@ class _NewMessageState extends State<NewMessage> {
             .now(), //made available by firestore cloud package; create it to sort the messages
         'userId': user.uid,
         'username': userData['username'],
+        'userImage': userData['image_url'],
         
       }
     );

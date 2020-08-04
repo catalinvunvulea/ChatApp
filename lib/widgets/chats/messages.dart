@@ -43,6 +43,7 @@ class Messages extends StatelessWidget {
                 itemBuilder: (ctx, index) => MessageBubble(
                   chatDocs[index]['text'],
                   chatDocs[index]['username'],//we will get the user name based on his id
+                  chatDocs[index]['userImage'],
                   chatDocs[index]['userId'] ==
                       futureSnapshot.data
                           .uid, //check if the logged in user id is the same with the user who wrote the message (false or true)

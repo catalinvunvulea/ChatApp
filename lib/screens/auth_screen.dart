@@ -56,6 +56,8 @@ class _AuthScreenState extends State<AuthScreen> {
         await refX.putFile(
             image).onComplete; //put/add a file (image) at the above path on firebaseStorage, and use the last segment of the path (child with jpg)as the file name, takes longer, does not return a future hence we need to add onComplete to enable it as a future (and use await)
 
+          final url = await refX.getDownloadURL();
+
         await Firestore.instance //accessing firestore
             .collection(
                 'users') //accessing collection(folder) 'users' (or creating if it doesn't exist)
@@ -65,6 +67,7 @@ class _AuthScreenState extends State<AuthScreen> {
           //add data in the folder accessed above
           'username': uerName,
           'email': email,
+          'image_url': url,
         });
       }
     } on PlatformException catch (error) {
