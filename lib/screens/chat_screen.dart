@@ -42,12 +42,14 @@ class _ChatScreenState extends State<ChatScreen> {
         title: Text('Flutter Chat'),
         actions: <Widget>[
           DropdownButton(
+            underline: Container(),//to avoid showing a line under the DropDown button
             icon: Icon(
               Icons.more_vert,
               color: Colors.white,
             ),
             items: [
               DropdownMenuItem(
+                
                   child: Container(
                     child: Row(
                       children: <Widget>[
